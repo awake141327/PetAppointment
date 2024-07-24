@@ -16,7 +16,7 @@ const AddAppointment = ({ sendAppointment, lastId }) => {
 
   const formDataPublish = () => {
     const appointmentInfo = {
-      id: lastId + 1,
+      id: lastId() + 1,
       petName: formData.petName,
       ownerName: formData.ownerName,
       aptDate: formData.aptDate + " " + formData.aptTime,

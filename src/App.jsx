@@ -1,11 +1,14 @@
+import { useState, useEffect } from "react";
 import { BiCalendar } from "react-icons/bi";
-import { useState, useEffect, useCallback } from "react";
 import Search from "./components/Search";
 import AddAppointment from "./components/AddAppointment";
 import AppointmentInfo from "./components/AppointmentInfo";
+import appointmentData from "./data.json";
 
 function App() {
-  const [appointmentList, setAppointmentList] = useState([]);
+  const [appointmentList, setAppointmentList] = useState(
+    JSON.parse(localStorage.getItem("appointments")) || appointmentData
+  );
   const [query, setQuery] = useState("");
   const [sortBy, setSortBy] = useState("petName");
   const [orderBy, setOrderBy] = useState("asc");
@@ -25,15 +28,9 @@ function App() {
         : 1 * order;
     });
 
-  const fetchData = useCallback(() => {
-    fetch("./data.json")
-      .then((response) => response.json())
-      .then((data) => setAppointmentList(data));
-  }, []);
-
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    localStorage.setItem("appointments", JSON.stringify(appointmentList));
+  }, [appointmentList]);
 
   function deleteAppointment(id) {
     setAppointmentList(
@@ -58,13 +55,14 @@ function App() {
   }
 
   function getLastId() {
-    return appointmentList.reduce((max, appointment) => {
+    const id = appointmentList.reduce((max, appointment) => {
       const id = Number(appointment.id);
       if (id > max) {
         max = id;
       }
       return max;
     }, 0);
+    return id;
   }
 
   return (
